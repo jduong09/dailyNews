@@ -48,10 +48,6 @@ app.get('/news/global', async (req, res) => {
   res.json(response);
 });
 
-app.get('/news/local', (req, res) => {
-
-});
-
 app.listen(port, () => {
   console.log(`App listening on Port ${port}`);
 });
