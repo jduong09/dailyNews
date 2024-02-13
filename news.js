@@ -1,52 +1,53 @@
-import 'dotenv/config';
-
 document.addEventListener("DOMContentLoaded", () => {
   const divHeaderDate = document.getElementById("div-todays-date");
   const divUSNews = document.getElementById("users-country-news");
+  const divGlobalNews = document.getElementById("users-global-news");
 
   const getTodaysDate = () => new Date().toLocaleDateString();
   divHeaderDate.innerText = getTodaysDate();
 
-  const asyncGetUSNews = () => {
+  // Argument location = country, global, zipcode
+  const asyncGetNews = (location) => {
     const req = new XMLHttpRequest();
-    
-    req.open("GET", "https://newsdata.io/api/1/news?country=us&size=1", true);
 
-    req.setRequestHeader("X-ACCESS-KEY", process.env.apiKey);
-    req.setRequestHeader("Access-Control-Allow-Origin", "*");
+    if (location === 'global') {
+      req.open("GET", "http://localhost:5000/news/global", true);
+    } else {
+      req.open("GET", "http://localhost:5000/news/us", true);
+    }
+    
+    req.setRequestHeader('Access-Control-Allow-Origin', '*');
+    req.responseType = "json";
 
     req.onreadystatechange = () => {
       const { readyState, status, response } = req;
       if (readyState === XMLHttpRequest.DONE) {
         if (status === 0 || status >= 200 && status < 400) {
-          // Request has been completed.
-          setArticleDiv(response.json(), divUSNews);
+          if (location === 'global') {
+            setArticleDiv(response, divGlobalNews);
+          } else {
+            setArticleDiv(response, divUSNews);
+          }
         } else {
           // Error Handling.
         }
       }
     }
     req.send();
-  
   }
-  asyncGetUSNews();
-
-
-  const getGlobalNews = () => {
-  }
-
-  const getLocalNews = (zipcode) => {
-  }
+  asyncGetNews('us');
+  asyncGetNews('global');
 });
 
 const setArticleDiv = (response, div) => {
-  const { title, link, pubDate, image_url, creator, description } = response.results;
+  const { title, link, pubDate, image_url, description } = response.results[0];
   const divHeader = document.createElement("div");
+  divHeader.classList.add('article-header')
   const headerArticle = document.createElement("h2");
   headerArticle.innerText = title;
 
   const divDate = document.createElement("div");
-  divDate.innerText = pubDate.splice(0, 10);
+  divDate.innerText = pubDate.slice(0, 10);
 
   divHeader.append(headerArticle, divDate);
 
@@ -59,6 +60,7 @@ const setArticleDiv = (response, div) => {
   const divLink = document.createElement("a");
   divLink.href = link;
   divLink.setAttribute("target", "_blank");
+  divLink.innerText = "Link to article ->";
 
   div.append(divHeader, imgImageUrl, divDescription, divLink);
 }
