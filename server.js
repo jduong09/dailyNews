@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 const app = express();
@@ -10,6 +11,8 @@ app.use(cors());
 const { apiKey, PORT } = process.env;
 
 const port = PORT || 5000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.static(__dirname + '/public'));
 
