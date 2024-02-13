@@ -11,9 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const req = new XMLHttpRequest();
 
     if (location === 'global') {
-      req.open("GET", "http://localhost:5000/news/global", true);
+      req.open("GET", "/news/global", true);
     } else {
-      req.open("GET", "http://localhost:5000/news/us", true);
+      req.open("GET", "/news/us", true);
     }
     
     req.setRequestHeader('Access-Control-Allow-Origin', '*');
