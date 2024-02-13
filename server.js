@@ -10,6 +10,12 @@ const { apiKey, PORT } = process.env;
 
 const port = PORT || 5000;
 
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.get('/news/us', async (req, res) => {
   const response = await fetch("https://newsdata.io/api/1/news?country=us&size=1", {
     method: "GET",
